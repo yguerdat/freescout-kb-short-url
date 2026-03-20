@@ -2,7 +2,7 @@
 
 Generate short URLs for your [FreeScout](https://freescout.net/) Knowledge Base articles using [Shlink](https://shlink.io/), a self-hosted URL shortener.
 
-Share KB articles easily via WhatsApp, Telegram, SMS, or email with clean, short links like `es.ink/kb1`, `es.ink/kb2`, etc.
+Share KB articles easily via WhatsApp, Telegram, SMS, or email with clean, short links like `shlink.domain/kb1`, `shlink.domain/kb2`, etc.
 
 ![License](https://img.shields.io/badge/license-AGPL--3.0-blue)
 ![FreeScout](https://img.shields.io/badge/FreeScout-1.8.58+-green)
@@ -11,7 +11,7 @@ Share KB articles easily via WhatsApp, Telegram, SMS, or email with clean, short
 
 - **Automatic short URL creation** — A short URL is generated via Shlink every time a KB article is published
 - **Automatic cleanup** — Short URLs are deleted when articles are unpublished or deleted
-- **Numeric slugs with prefix** — Produces `es.ink/kb1`, `es.ink/kb2`... (prefix is configurable)
+- **Numeric slugs with prefix** — Produces `shlink.domain/kb1`, `shlink.domain/kb2`... (prefix is configurable)
 - **Multi-language support** — Optionally creates per-locale URLs (`kb42`, `kb42-en`, `kb42-de`)
 - **Share widget** — A floating share button appears on KB article pages with:
   - Copy to clipboard
@@ -22,7 +22,7 @@ Share KB articles easily via WhatsApp, Telegram, SMS, or email with clean, short
 - **Conflict-safe** — If a slug is already taken in Shlink (used for other purposes), the module automatically tries the next number
 - **Secure** — API key is encrypted at rest, all admin routes are protected, no client-side API exposure
 - **Configurable** — Domain, prefix, counter start, and translation handling are all configurable
-- **Bilingual** — Admin interface available in English and French
+- **Trilingual** — Admin interface available in English, French and German
 
 ## Requirements
 
@@ -56,8 +56,8 @@ After activation, go to **Manage → KB Short URL** in the admin panel:
 |---|---|---|
 | **Shlink API URL** | Base URL of your Shlink instance | `https://shlink.example.com` |
 | **Shlink API Key** | API key generated via `shlink api-key:generate` | `abc123...` |
-| **Short URL Domain** | The domain configured in Shlink | `es.ink` |
-| **Slug Prefix** | Prefix before the number | `kb` → produces `es.ink/kb1` |
+| **Short URL Domain** | The domain configured in Shlink | `shlink.domain` |
+| **Slug Prefix** | Prefix before the number | `kb` → produces `shlink.domain/kb1` |
 | **Next Number** | Starting counter (auto-increments) | `1` |
 | **Handle Translations** | Create separate short URLs per language | Checkbox |
 
@@ -87,9 +87,9 @@ When enabled, translations get their own short URLs with a locale suffix:
 
 | Locale | Short URL |
 |---|---|
-| French (default) | `es.ink/kb42` |
-| English | `es.ink/kb42-en` |
-| German | `es.ink/kb42-de` |
+| French (default) | `shlink.domain/kb42` |
+| English | `shlink.domain/kb42-en` |
+| German | `shlink.domain/kb42-de` |
 
 ### Share Widget
 
@@ -117,7 +117,7 @@ KbShortUrl/
 ├── Services/ShlinkApiService.php        # Shlink API client
 ├── Resources/
 │   ├── views/                           # Blade templates
-│   └── lang/                            # EN + FR translations
+│   └── lang/                            # EN + FR + DE translations
 ├── Public/
 │   ├── css/module.css                   # Share widget styles
 │   └── js/
@@ -149,5 +149,7 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 ## Credits
 
+- **Yannick Guerdat** — Module author ([GitHub](https://github.com/yguerdat))
 - [FreeScout](https://freescout.net/) — Free open-source help desk
 - [Shlink](https://shlink.io/) — Self-hosted URL shortener
+- Built with the assistance of [Claude Code](https://claude.ai/claude-code) by Anthropic

@@ -43,7 +43,7 @@
             <div class="col-sm-7">
                 <input type="text" class="form-control" name="shlink_domain"
                     value="{{ \Option::get('kbshorturl.shlink_domain', '') }}"
-                    placeholder="es.ink" required>
+                    placeholder="shlink.domain" required>
                 <p class="help-block">{{ __('The domain configured in Shlink for short URLs.') }}</p>
             </div>
         </div>

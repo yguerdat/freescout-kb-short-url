@@ -30,7 +30,7 @@
     "The base URL of your Shlink instance (without /rest/v3/).": "Die Basis-URL Ihrer Shlink-Instanz (ohne /rest/v3/).",
     "Generate an API key via: shlink api-key:generate": "Generieren Sie einen API-Schlüssel mit: shlink api-key:generate",
     "The domain configured in Shlink for short URLs.": "Die in Shlink konfigurierte Domain für Kurzlinks.",
-    "Prefix for short URL slugs. Example: \"kb\" produces es.ink/kb1, es.ink/kb2...": "Präfix für Kurzlink-Slugs. Beispiel: \"kb\" erzeugt es.ink/kb1, es.ink/kb2...",
+    "Prefix for short URL slugs. Example: \"kb\" produces shlink.domain/kb1, shlink.domain/kb2...": "Präfix für Kurzlink-Slugs. Beispiel: \"kb\" erzeugt shlink.domain/kb1, shlink.domain/kb2...",
     "The next number to use for auto-generated slugs. Can only be increased.": "Die nächste Nummer für automatisch generierte Slugs. Kann nur erhöht werden.",
     "Create separate short URLs per language (e.g., kb42, kb42-en, kb42-de).": "Separate Kurzlinks pro Sprache erstellen (z.B. kb42, kb42-en, kb42-de).",
     "Creates short URLs for all published KB articles that do not have one yet.": "Erstellt Kurzlinks für alle veröffentlichten KB-Artikel, die noch keinen haben.",
