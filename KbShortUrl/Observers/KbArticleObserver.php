@@ -72,13 +72,13 @@ class KbArticleObserver
      */
     public function createShortUrl(KbArticle $article, $mailbox, $locale, ShlinkApiService $shlinkService)
     {
-        $prefix = \Option::get('kbshorturl.slug_prefix', 'kb');
+        $prefix = self::getOptionDirect('kbshorturl.slug_prefix', 'kb');
         $longUrl = $this->buildArticleLongUrl($article, $mailbox, $locale);
         $title = $this->getArticleTitle($article, $locale);
 
-        // Get next available number.
-        $number = (int) \Option::get('kbshorturl.next_number', 1);
-        $maxRetries = 10;
+        // Get next available number (bypass Option cache).
+        $number = (int) self::getOptionDirect('kbshorturl.next_number', 1);
+        $maxRetries = 50;
 
         for ($attempt = 0; $attempt < $maxRetries; $attempt++) {
             $shortCode = $prefix . $number;
@@ -101,7 +101,7 @@ class KbArticleObserver
 
                 // Increment the global counter (only for the base locale).
                 if ($locale === '' || $locale === \Kb::defaultLocale($mailbox)) {
-                    \Option::set('kbshorturl.next_number', $number + 1);
+                    self::setOptionDirect('kbshorturl.next_number', $number + 1);
                 }
 
                 \Log::info('KbShortUrl: Created short URL ' . $result['short_url'] . ' for article #' . $article->id . ($locale ? ' [' . $locale . ']' : ''));
@@ -111,8 +111,7 @@ class KbArticleObserver
             if ($result['error'] === 'slug_taken') {
                 // Slug conflict, try next number.
                 $number++;
-                \Option::set('kbshorturl.next_number', $number + 1);
-                \Log::info('KbShortUrl: Slug "' . $shortCode . '" already taken, trying next number.');
+                self::setOptionDirect('kbshorturl.next_number', $number + 1);
                 continue;
             }
 
@@ -191,5 +190,30 @@ class KbArticleObserver
             return $article->getAttributeInLocale('title', $locale);
         }
         return $article->title;
+    }
+
+    /**
+     * Read an option directly from DB, bypassing the static cache.
+     */
+    private static function getOptionDirect($name, $default = null)
+    {
+        $option = \App\Option::where('name', $name)->first();
+        if ($option) {
+            $value = $option->value;
+            // Update the static cache so subsequent reads are consistent.
+            \App\Option::$cache[$name] = $value;
+            return $value;
+        }
+        return $default;
+    }
+
+    /**
+     * Write an option and update the static cache immediately.
+     */
+    private static function setOptionDirect($name, $value)
+    {
+        \Option::set($name, $value);
+        // Force update the static cache.
+        \App\Option::$cache[$name] = $value;
     }
 }

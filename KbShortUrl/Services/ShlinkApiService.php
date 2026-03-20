@@ -66,8 +66,12 @@ class ShlinkApiService
             ];
         }
 
-        // Slug already in use.
-        if ($response['status'] === 409) {
+        // Slug already in use (check status code AND error message as fallback).
+        $isSlugTaken = ($response['status'] == 409)
+            || (isset($response['data']['type']) && str_contains($response['data']['type'], 'slug-already-in-use'))
+            || (isset($response['error']) && stripos($response['error'], 'already in use') !== false);
+
+        if ($isSlugTaken) {
             return [
                 'success' => false,
                 'error'   => 'slug_taken',
