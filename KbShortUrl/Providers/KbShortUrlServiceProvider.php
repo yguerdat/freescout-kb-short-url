@@ -95,6 +95,12 @@ class KbShortUrlServiceProvider extends ServiceProvider
                 $shortUrl = \Modules\KbShortUrl\Entities\KbShortUrl::getByArticleAndLocale($articleId, '');
             }
             if ($shortUrl) {
+                // Temporarily switch locale to match the KB page language.
+                $prevLocale = app()->getLocale();
+                if ($locale) {
+                    app()->setLocale($locale);
+                }
+
                 $translations = json_encode([
                     'copy'      => __('Copy'),
                     'copied'    => __('Copied!'),
@@ -104,6 +110,10 @@ class KbShortUrlServiceProvider extends ServiceProvider
                     'telegram'  => __('Telegram'),
                     'email'     => __('Email'),
                 ]);
+
+                // Restore locale.
+                app()->setLocale($prevLocale);
+
                 echo '<div id="kb-short-url-data" data-short-url="' . htmlspecialchars($shortUrl->short_url, ENT_QUOTES) . '" data-translations="' . htmlspecialchars($translations, ENT_QUOTES) . '" style="display:none;"></div>';
             }
         });
