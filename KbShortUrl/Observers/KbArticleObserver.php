@@ -75,21 +75,52 @@ class KbArticleObserver
         $prefix = self::getOptionDirect('kbshorturl.slug_prefix', 'kb');
         $longUrl = $this->buildArticleLongUrl($article, $mailbox, $locale);
         $title = $this->getArticleTitle($article, $locale);
+        $isNonDefaultLocale = ($locale !== '' && $locale !== \Kb::defaultLocale($mailbox));
 
-        // Get next available number (bypass Option cache).
+        // For non-default locales, reuse the number from the default locale entry.
+        if ($isNonDefaultLocale) {
+            $defaultEntry = KbShortUrl::where('article_id', $article->id)
+                ->where(function ($q) use ($mailbox) {
+                    $q->where('locale', '')->orWhere('locale', \Kb::defaultLocale($mailbox));
+                })
+                ->first();
+
+            if ($defaultEntry) {
+                $shortCode = $prefix . $defaultEntry->short_number . '-' . $locale;
+                $result = $shlinkService->createShortUrl($longUrl, $shortCode, $title);
+
+                if ($result['success']) {
+                    KbShortUrl::create([
+                        'article_id'   => $article->id,
+                        'locale'       => $locale,
+                        'short_number' => $defaultEntry->short_number,
+                        'short_code'   => $shortCode,
+                        'short_url'    => $result['short_url'],
+                        'long_url'     => $longUrl,
+                    ]);
+                    \Log::info('KbShortUrl: Created short URL ' . $result['short_url'] . ' for article #' . $article->id . ' [' . $locale . ']');
+                    return true;
+                }
+
+                \Log::error('KbShortUrl: Failed to create short URL for article #' . $article->id . ' [' . $locale . ']: ' . ($result['message'] ?? 'Unknown error'));
+                return false;
+            }
+
+            // No default locale entry exists yet — skip, it will be created later.
+            \Log::warning('KbShortUrl: No default locale short URL for article #' . $article->id . ', skipping ' . $locale);
+            return false;
+        }
+
+        // Default locale: get next available number.
         $number = (int) self::getOptionDirect('kbshorturl.next_number', 1);
         $maxRetries = 50;
 
         for ($attempt = 0; $attempt < $maxRetries; $attempt++) {
             $shortCode = $prefix . $number;
-            if ($locale !== '' && $locale !== \Kb::defaultLocale($mailbox)) {
-                $shortCode .= '-' . $locale;
-            }
 
             $result = $shlinkService->createShortUrl($longUrl, $shortCode, $title);
 
             if ($result['success']) {
-                // Save locally.
                 KbShortUrl::create([
                     'article_id'   => $article->id,
                     'locale'       => $locale,
@@ -99,23 +130,18 @@ class KbArticleObserver
                     'long_url'     => $longUrl,
                 ]);
 
-                // Increment the global counter (only for the base locale).
-                if ($locale === '' || $locale === \Kb::defaultLocale($mailbox)) {
-                    self::setOptionDirect('kbshorturl.next_number', $number + 1);
-                }
+                self::setOptionDirect('kbshorturl.next_number', $number + 1);
 
-                \Log::info('KbShortUrl: Created short URL ' . $result['short_url'] . ' for article #' . $article->id . ($locale ? ' [' . $locale . ']' : ''));
+                \Log::info('KbShortUrl: Created short URL ' . $result['short_url'] . ' for article #' . $article->id);
                 return true;
             }
 
             if ($result['error'] === 'slug_taken') {
-                // Slug conflict, try next number.
                 $number++;
                 self::setOptionDirect('kbshorturl.next_number', $number + 1);
                 continue;
             }
 
-            // Other API error: stop trying.
             \Log::error('KbShortUrl: Failed to create short URL for article #' . $article->id . ': ' . ($result['message'] ?? 'Unknown error'));
             return false;
         }
