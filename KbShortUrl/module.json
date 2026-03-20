@@ -15,13 +15,13 @@
     ],
     "requires": [],
     "author": "Yannick Guerdat",
-    "authorUrl": "https://github.com/yannickguerdat",
-    "detailsUrl": "https://github.com/yannickguerdat/freescout-kb-short-url",
+    "authorUrl": "https://github.com/yguerdat",
+    "detailsUrl": "https://github.com/yguerdat/freescout-kb-short-url",
     "license": "AGPL-3.0",
     "requiredAppVersion": "1.8.58",
     "img": "/modules/kbshorturl/img/icon.png",
-    "latestVersionUrl": "https://raw.githubusercontent.com/yannickguerdat/freescout-kb-short-url/main/KbShortUrl/module.json",
-    "latestVersionZipUrl": "https://github.com/yannickguerdat/freescout-kb-short-url/archive/refs/heads/main.zip",
+    "latestVersionUrl": "https://raw.githubusercontent.com/yguerdat/freescout-kb-short-url/main/KbShortUrl/module.json",
+    "latestVersionZipUrl": "https://github.com/yguerdat/freescout-kb-short-url/archive/refs/heads/main.zip",
     "requiredModules": {
         "knowledgebase": "1.0.19"
     }
