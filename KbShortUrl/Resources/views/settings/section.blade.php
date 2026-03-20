@@ -14,7 +14,12 @@
 
 @section('content')
 <div class="section-heading">KB Short URL</div>
-<div class="col-xs-12">
+<div class="col-xs-12"
+     id="kbshorturl-settings-page"
+     data-test-url="{{ route('kbshorturl.test_connection') }}"
+     data-bulk-url="{{ route('kbshorturl.bulk_generate') }}"
+     data-generating-text="{{ __('Generating...') }}">
+
     <form method="POST" action="{{ route('kbshorturl.settings') }}" class="form-horizontal margin-top">
         {{ csrf_field() }}
 
@@ -54,7 +59,7 @@
                 <input type="text" class="form-control" name="slug_prefix"
                     value="{{ \Option::get('kbshorturl.slug_prefix', 'kb') }}"
                     placeholder="kb" pattern="[a-z0-9\-]*">
-                <p class="help-block">{{ __('Prefix for short URL slugs. Example: "kb" produces es.ink/kb1, es.ink/kb2...') }}</p>
+                <p class="help-block">{{ __('Prefix for short URL slugs. Example: "kb" produces shlink.domain/kb1, shlink.domain/kb2...') }}</p>
             </div>
         </div>
 
@@ -142,65 +147,4 @@
         @endif
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Test connection.
-    document.getElementById('kbshorturl-test-btn').addEventListener('click', function() {
-        var btn = this;
-        var result = document.getElementById('kbshorturl-test-result');
-        btn.disabled = true;
-        result.innerHTML = '<i class="glyphicon glyphicon-hourglass"></i>';
-
-        var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        fetch('{{ route("kbshorturl.test_connection") }}', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': token},
-        })
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            btn.disabled = false;
-            if (data.success) {
-                result.innerHTML = '<span class="text-success"><i class="glyphicon glyphicon-ok"></i> ' + data.message + '</span>';
-            } else {
-                result.innerHTML = '<span class="text-danger"><i class="glyphicon glyphicon-remove"></i> ' + data.message + '</span>';
-            }
-        })
-        .catch(function() {
-            btn.disabled = false;
-            result.innerHTML = '<span class="text-danger">Error</span>';
-        });
-    });
-
-    // Bulk generate.
-    document.getElementById('kbshorturl-bulk-btn').addEventListener('click', function() {
-        var btn = this;
-        var result = document.getElementById('kbshorturl-bulk-result');
-        btn.disabled = true;
-        result.innerHTML = '<i class="glyphicon glyphicon-hourglass"></i> {{ __("Generating...") }}';
-
-        var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        fetch('{{ route("kbshorturl.bulk_generate") }}', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': token},
-        })
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            btn.disabled = false;
-            if (data.success) {
-                result.innerHTML = '<span class="text-success"><i class="glyphicon glyphicon-ok"></i> ' + data.message + '</span>';
-                if (data.message.indexOf('0 errors') === -1 || data.message.indexOf('0 skipped') === -1) {
-                    setTimeout(function() { location.reload(); }, 2000);
-                }
-            } else {
-                result.innerHTML = '<span class="text-danger"><i class="glyphicon glyphicon-remove"></i> ' + data.message + '</span>';
-            }
-        })
-        .catch(function() {
-            btn.disabled = false;
-            result.innerHTML = '<span class="text-danger">Error</span>';
-        });
-    });
-});
-</script>
 @endsection
