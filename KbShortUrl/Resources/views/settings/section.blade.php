@@ -8,7 +8,7 @@
     @include('partials/sidebar_menu_toggle')
     <div class="sidebar-title">{{ __('Manage') }}</div>
     <ul class="sidebar-menu">
-        @include('partials/sidebar_menu_item', ['url' => route('kbshorturl.settings'), 'title' => 'KB Short URL', 'icon' => 'link'])
+        <li class="active"><a href="{{ route('kbshorturl.settings') }}"><i class="glyphicon glyphicon-link"></i> KB Short URL</a></li>
     </ul>
 @endsection
 
