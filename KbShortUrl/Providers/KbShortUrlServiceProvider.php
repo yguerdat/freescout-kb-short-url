@@ -60,20 +60,12 @@ class KbShortUrlServiceProvider extends ServiceProvider
             <?php
         });
 
-        // Add settings link in the admin menu under "Manage".
-        \Eventy::addAction('menu.manage.append', function () {
-            if (auth()->user() && auth()->user()->isAdmin()) {
-                echo \View::make('kbshorturl::partials/menu_manage')->render();
+        // Add settings link in the mailbox settings menu, right after Knowledge Base.
+        \Eventy::addAction('mailboxes.settings.menu', function ($mailbox) {
+            if (auth()->user() && (auth()->user()->isAdmin() || auth()->user()->hasPermission(\Kb::PERM_EDIT_KB))) {
+                echo '<li ' . (\App\Misc\Helper::isMenuSelected('kbshorturl') ? 'class="active"' : '') . '><a href="' . route('kbshorturl.settings') . '"><i class="glyphicon glyphicon-link"></i> ' . __('KB Short URL') . '</a></li>';
             }
-        });
-
-        // Settings page view.
-        \Eventy::addFilter('settings.view', function ($view, $section) {
-            if ($section !== 'kbshorturl') {
-                return $view;
-            }
-            return 'kbshorturl::settings/section';
-        }, 20, 2);
+        }, 38);
 
         // Inject the share widget JS + CSS into KB frontend pages.
         \Eventy::addFilter('kb.javascripts', function ($scripts) {
