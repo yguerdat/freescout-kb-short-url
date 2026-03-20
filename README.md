@@ -22,7 +22,7 @@ Share KB articles easily via WhatsApp, Telegram, SMS, or email with clean, short
 - **Conflict-safe** — If a slug is already taken in Shlink (used for other purposes), the module automatically tries the next number
 - **Secure** — API key is encrypted at rest, all admin routes are protected, no client-side API exposure
 - **Configurable** — Domain, prefix, counter start, and translation handling are all configurable
-- **Trilingual** — Admin interface available in English, French and German
+- **Trilingual** — Admin interface and share widget available in English, French and German. Additional languages can easily be added by creating a new JSON translation file in `Resources/lang/` (e.g., `es.json` for Spanish)
 
 ## Requirements
 
