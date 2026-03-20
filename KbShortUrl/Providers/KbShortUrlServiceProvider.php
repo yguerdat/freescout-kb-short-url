@@ -17,6 +17,7 @@ class KbShortUrlServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->registerTranslations();
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+        $this->loadRoutesFrom(__DIR__ . '/../Http/routes.php');
         $this->hooks();
 
         // Register the observer on KB articles.
