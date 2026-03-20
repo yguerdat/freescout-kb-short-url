@@ -5,13 +5,14 @@
 (function() {
     'use strict';
 
-    // Wait for the page to be ready.
+    var t = {};
+
     document.addEventListener('DOMContentLoaded', init);
 
     function init() {
         var dataEl = document.getElementById('kb-short-url-data');
         if (!dataEl) {
-            return; // No short URL available for this article.
+            return;
         }
 
         var shortUrl = dataEl.getAttribute('data-short-url');
@@ -19,7 +20,18 @@
             return;
         }
 
+        // Load translations from data attribute (server-side rendered in current locale).
+        try {
+            t = JSON.parse(dataEl.getAttribute('data-translations') || '{}');
+        } catch (e) {
+            t = {};
+        }
+
         createWidget(shortUrl);
+    }
+
+    function tr(key, fallback) {
+        return t[key] || fallback;
     }
 
     function createWidget(shortUrl) {
@@ -28,7 +40,6 @@
         widget.innerHTML = buildPanel(shortUrl) + buildToggleButton();
         document.body.appendChild(widget);
 
-        // Toggle panel.
         var toggleBtn = widget.querySelector('.kbsu-toggle-btn');
         var panel = widget.querySelector('.kbsu-panel');
 
@@ -36,14 +47,12 @@
             panel.classList.toggle('kbsu-open');
         });
 
-        // Close on outside click.
         document.addEventListener('click', function(e) {
             if (!widget.contains(e.target)) {
                 panel.classList.remove('kbsu-open');
             }
         });
 
-        // Copy button.
         var copyBtn = widget.querySelector('.kbsu-copy-btn');
         var urlInput = widget.querySelector('.kbsu-url-input');
 
@@ -64,7 +73,7 @@
 
     function showCopied(btn) {
         var origText = btn.textContent;
-        btn.textContent = getLang('kbshorturl.copied', 'Copied!');
+        btn.textContent = tr('copied', 'Copied!');
         btn.classList.add('kbsu-copied');
         setTimeout(function() {
             btn.textContent = origText;
@@ -78,43 +87,37 @@
         var encodedText = encodeURIComponent(pageTitle + ' ' + shortUrl);
 
         return '<div class="kbsu-panel">' +
-            '<div class="kbsu-panel-title">' + getLang('kbshorturl.short_link', 'Short link') + '</div>' +
+            '<div class="kbsu-panel-title">' + escapeHtml(tr('short_link', 'Short link')) + '</div>' +
             '<div class="kbsu-url-row">' +
                 '<input type="text" class="kbsu-url-input" value="' + escapeAttr(shortUrl) + '" readonly>' +
-                '<button class="kbsu-copy-btn">' + getLang('kbshorturl.copy', 'Copy') + '</button>' +
+                '<button class="kbsu-copy-btn">' + escapeHtml(tr('copy', 'Copy')) + '</button>' +
             '</div>' +
             '<div class="kbsu-share-buttons">' +
                 '<a class="kbsu-share-btn kbsu-share-whatsapp" href="https://wa.me/?text=' + encodedText + '" target="_blank" rel="noopener">' +
-                    svgWhatsApp() + '<span>' + getLang('kbshorturl.share_via_whatsapp', 'WhatsApp') + '</span>' +
+                    svgWhatsApp() + '<span>' + escapeHtml(tr('whatsapp', 'WhatsApp')) + '</span>' +
                 '</a>' +
                 '<a class="kbsu-share-btn kbsu-share-telegram" href="https://t.me/share/url?url=' + encodedUrl + '&text=' + encodeURIComponent(pageTitle) + '" target="_blank" rel="noopener">' +
-                    svgTelegram() + '<span>' + getLang('kbshorturl.share_via_telegram', 'Telegram') + '</span>' +
+                    svgTelegram() + '<span>' + escapeHtml(tr('telegram', 'Telegram')) + '</span>' +
                 '</a>' +
                 '<a class="kbsu-share-btn kbsu-share-email" href="mailto:?subject=' + encodeURIComponent(pageTitle) + '&body=' + encodedText + '">' +
-                    svgEmail() + '<span>' + getLang('kbshorturl.share_via_email', 'Email') + '</span>' +
+                    svgEmail() + '<span>' + escapeHtml(tr('email', 'Email')) + '</span>' +
                 '</a>' +
             '</div>' +
         '</div>';
     }
 
     function buildToggleButton() {
-        return '<button class="kbsu-toggle-btn" title="' + getLang('kbshorturl.share', 'Share') + '">' +
+        return '<button class="kbsu-toggle-btn" title="' + escapeAttr(tr('share', 'Share')) + '">' +
             '<svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>' +
         '</button>';
     }
 
-    function getLang(key, fallback) {
-        if (typeof Lang !== 'undefined' && Lang.get) {
-            var val = Lang.get('messages.' + key);
-            if (val && val !== 'messages.' + key) {
-                return val;
-            }
-        }
-        return fallback;
-    }
-
     function escapeAttr(s) {
         return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function escapeHtml(s) {
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
     function svgWhatsApp() {

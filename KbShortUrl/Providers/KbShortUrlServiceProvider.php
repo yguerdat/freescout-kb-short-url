@@ -95,7 +95,16 @@ class KbShortUrlServiceProvider extends ServiceProvider
                 $shortUrl = \Modules\KbShortUrl\Entities\KbShortUrl::getByArticleAndLocale($articleId, '');
             }
             if ($shortUrl) {
-                echo '<div id="kb-short-url-data" data-short-url="' . htmlspecialchars($shortUrl->short_url, ENT_QUOTES) . '" style="display:none;"></div>';
+                $translations = json_encode([
+                    'copy'      => __('Copy'),
+                    'copied'    => __('Copied!'),
+                    'share'     => __('Share'),
+                    'short_link'=> __('Short link'),
+                    'whatsapp'  => __('WhatsApp'),
+                    'telegram'  => __('Telegram'),
+                    'email'     => __('Email'),
+                ]);
+                echo '<div id="kb-short-url-data" data-short-url="' . htmlspecialchars($shortUrl->short_url, ENT_QUOTES) . '" data-translations="' . htmlspecialchars($translations, ENT_QUOTES) . '" style="display:none;"></div>';
             }
         });
     }
