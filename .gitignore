@@ -1,0 +1,8 @@
+.DS_Store
+.env
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+.claude/

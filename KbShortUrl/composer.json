@@ -1,0 +1,17 @@
+{
+    "name": "freescout-modules/kb-short-url",
+    "description": "Generate short URLs for FreeScout Knowledge Base articles via Shlink.",
+    "type": "freescout-module",
+    "license": "AGPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Yannick Guerdat"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Modules\\KbShortUrl\\": ""
+        }
+    }
+}

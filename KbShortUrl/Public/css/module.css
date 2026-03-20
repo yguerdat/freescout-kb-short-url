@@ -1,0 +1,144 @@
+/* KB Short URL - Share Widget */
+.kbsu-widget {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.kbsu-toggle-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #0068bd;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-left: auto;
+}
+
+.kbsu-toggle-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.kbsu-toggle-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+}
+
+.kbsu-panel {
+    display: none;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    padding: 16px;
+    margin-bottom: 12px;
+    min-width: 280px;
+    max-width: 340px;
+}
+
+.kbsu-panel.kbsu-open {
+    display: block;
+    animation: kbsu-fade-in 0.2s ease;
+}
+
+@keyframes kbsu-fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.kbsu-panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.kbsu-url-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.kbsu-url-input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #333;
+    background: #f8f9fa;
+    outline: none;
+}
+
+.kbsu-url-input:focus {
+    border-color: #0068bd;
+}
+
+.kbsu-copy-btn {
+    padding: 8px 12px;
+    border: 1px solid #0068bd;
+    border-radius: 6px;
+    background: #0068bd;
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+
+.kbsu-copy-btn:hover {
+    background: #0055a0;
+}
+
+.kbsu-copy-btn.kbsu-copied {
+    background: #28a745;
+    border-color: #28a745;
+}
+
+.kbsu-share-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.kbsu-share-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+
+.kbsu-share-btn:hover {
+    opacity: 0.85;
+    color: #fff;
+    text-decoration: none;
+}
+
+.kbsu-share-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.kbsu-share-whatsapp { background: #25D366; }
+.kbsu-share-telegram { background: #0088cc; }
+.kbsu-share-email { background: #6c757d; }
