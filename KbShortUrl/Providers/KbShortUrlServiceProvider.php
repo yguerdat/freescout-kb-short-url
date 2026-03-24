@@ -114,7 +114,8 @@ class KbShortUrlServiceProvider extends ServiceProvider
                 // Restore locale.
                 app()->setLocale($prevLocale);
 
-                echo '<div id="kb-short-url-data" data-short-url="' . htmlspecialchars($shortUrl->short_url, ENT_QUOTES) . '" data-translations="' . htmlspecialchars($translations, ENT_QUOTES) . '" style="display:none;"></div>';
+                $displayUrl = preg_replace('/^http:\/\//', 'https://', $shortUrl->short_url);
+                echo '<div id="kb-short-url-data" data-short-url="' . htmlspecialchars($displayUrl, ENT_QUOTES) . '" data-translations="' . htmlspecialchars($translations, ENT_QUOTES) . '" style="display:none;"></div>';
             }
         });
     }

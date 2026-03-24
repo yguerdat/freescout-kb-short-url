@@ -61,7 +61,7 @@ class ShlinkApiService
         if (in_array($response['status'], [200, 201])) {
             return [
                 'success'   => true,
-                'short_url' => $response['data']['shortUrl'] ?? '',
+                'short_url' => preg_replace('/^http:\/\//', 'https://', $response['data']['shortUrl'] ?? ''),
                 'short_code' => $response['data']['shortCode'] ?? $customSlug,
             ];
         }
